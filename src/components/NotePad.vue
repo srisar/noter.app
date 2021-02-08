@@ -17,9 +17,29 @@
         </div><!-- left side -->
 
         <div class="right-side">
-          <button class="header__button" @click="onDownloadFile"><i class="bi bi-download"></i></button>
-          <button class="header__button" @click="onCopyText"><i class="bi" :class="[icons.buttonCopy]"></i></button>
-          <button class="header__button" @click="onGeneratePreview"><i class="bi bi-markdown-fill"></i></button>
+
+          <button class="header__button" @click="onDownloadFile">
+            <i class="bi bi-file-earmark-arrow-down-fill"></i>
+            <span class="popup">download document</span>
+          </button>
+
+          <button class="header__button" @click="onCopyText">
+            <i class="bi bi-clipboard-check"></i>
+            <span class="popup">{{ copyButtonLabel }}</span>
+          </button>
+
+          <button class="header__button" @click="onGeneratePreview">
+            <i class="bi bi-markdown-fill"></i>
+            <span class="popup">view markdown preview</span>
+          </button>
+
+          <router-link to="/about" class="button">
+            <button class="header__button">
+              <i class="bi bi-info-circle-fill"></i>
+              <span class="popup">about noter</span>
+            </button>
+          </router-link>
+
         </div><!-- right-side -->
 
       </div>
@@ -53,15 +73,13 @@ export default {
 
   data() {
     return {
-      appVersion: '0.2',
+      appVersion: '0.4',
       editorData: "",
       previewData: "",
 
       isPreview: false,
 
-      icons: {
-        buttonCopy: 'bi-clipboard'
-      },
+      copyButtonLabel: 'copy',
 
     }
   },
@@ -114,10 +132,10 @@ export default {
     onCopyText: function () {
       navigator.clipboard.writeText(this.editorData)
           .then(() => {
-            this.icons.buttonCopy = 'bi-clipboard-check';
+            this.copyButtonLabel = '✔ copied';
 
             setTimeout(() => {
-              this.icons.buttonCopy = 'bi-clipboard';
+              this.copyButtonLabel = 'copy text';
             }, 3000);
 
           })
@@ -154,30 +172,27 @@ export default {
 
 }
 
+a.button {
+  text-decoration: none;
+}
+
+.popup {
+
+  display: none;
+
+  transition: 280ms all ease-out;
+
+  position: absolute;
+  background-color: #9e9e9e;
+  color: #181818;
+  padding: 3px 5px;
+  border-radius: 5px;
+  top: 40px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
 
 /* === special components === */
-
-#notepad {
-  flex-grow: 1;
-
-  .editor {
-    height: 100%;
-    border: black;
-    box-shadow: inset 0 0 5px black;
-    border-radius: 5px;
-    padding: 20px 10px;
-    background-color: #181818;
-    white-space: pre-wrap;
-    width: 100%;
-    color: white;
-    resize: none;
-  }
-
-  .editor:focus {
-    outline: #1E1E1E;
-  }
-
-}
 
 
 #header {
@@ -225,19 +240,37 @@ export default {
   }
 
   .header__button {
-    //padding: 10px;
-    width: 30px;
-    height: 30px;
-    border: solid 1px #FF5370;
-    border-radius: 50%;
-    font-size: 1em;
-    color: #FF5370;
-    background-color: #181818;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 5px;
     margin-left: 10px;
+    padding: 5px;
+    border: solid 1px #9e9e9e;
+    color: #9e9e9e;
+    background-color: #181818;
+    transition: 280ms all ease-out;
+
+    i {
+      font-size: 1em;
+      line-height: 1.5em;
+      margin-top: -10px;
+    }
+
+
+    &:hover {
+      .popup {
+        display: inline;
+      }
+    }
+
   }
 
   .header__button:hover {
-    background-color: #FF5370;
+    background-color: #ff9800;
+    border-color: #1E1E1E;
     color: #181818;
   }
 
@@ -249,6 +282,32 @@ export default {
 
 /* header */
 
+
+#notepad {
+  flex-grow: 1;
+
+  .editor {
+    height: 100%;
+    border: black;
+    box-shadow: inset 0 0 5px black;
+    border-radius: 5px;
+    padding: 20px 10px;
+    background-color: #181818;
+    white-space: pre-wrap;
+    width: 100%;
+    color: white;
+    resize: none;
+    line-height: 1.6em;
+    font-size: 1em;
+  }
+
+  .editor:focus {
+    outline: #1E1E1E;
+  }
+
+}
+
+
 #footer {
   display: flex;
   justify-content: center;
@@ -257,15 +316,14 @@ export default {
     font-size: 0.9em;
 
     a {
-      color: #FF5370;
+      color: #ff9800;
       text-decoration: none;
       display: inline-block;
       padding: 2px 5px;
     }
 
     a:hover {
-      background-color: #FF5370;
-      color: white;
+      color: #FF5370;
 
     }
 
