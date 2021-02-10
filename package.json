@@ -30,6 +30,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "marked": "^1.2.9",
     "sass": "^1.32.6",
+    "voca": "^1.4.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

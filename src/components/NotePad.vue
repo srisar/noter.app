@@ -33,6 +33,13 @@
             <span class="popup">view markdown preview</span>
           </button>
 
+          <router-link to="/settings" class="button">
+            <button class="header__button">
+              <i class="bi bi-sliders"></i>
+              <span class="popup">settings</span>
+            </button>
+          </router-link>
+
           <router-link to="/about" class="button">
             <button class="header__button">
               <i class="bi bi-info-circle-fill"></i>
@@ -47,13 +54,22 @@
     </div><!-- header -->
 
     <div id="notepad" class="flex-item padding-5">
-      <textarea v-if="!isPreview" class="editor" v-model="editorData"></textarea>
+      <textarea v-if="!isPreview" class="editor" v-model="editorContent"></textarea>
       <div v-else class="editor" v-html="previewData"></div>
     </div><!-- notepad -->
 
     <div id="footer" class="flex-item padding-5">
-      <div class="footer__content">
-        Developed by <a href="https://gravitide.dev">gravitide.dev</a> | Version {{ appVersion }}
+      <div class="footer__content d-flex justify-content-between align-items-center">
+
+        <div class="text-start">
+          Words: {{ wordsCount }}
+        </div>
+
+        <div class="text-end">
+          Developed by <a href="https://srisar.dev">srisar.dev</a> | Version {{ appVersion }}
+        </div>
+
+
       </div>
     </div><!-- footer -->
 
@@ -62,7 +78,7 @@
 
 <script>
 
-const KEY = 'content';
+// const KEY = 'content';
 
 import {downloadFile} from "@/helpers/downloader";
 
@@ -73,10 +89,9 @@ export default {
 
   data() {
     return {
-      appVersion: '0.4',
-      editorData: "",
-      previewData: "",
+      appVersion: '0.5',
 
+      previewData: "",
       isPreview: false,
 
       copyButtonLabel: 'copy',
@@ -84,53 +99,52 @@ export default {
     }
   },
 
+  /* === COMPUTED === */
   computed: {
     //
-  },
 
-  watch: {
-    editorData: function (value) {
-      this._putIntoLocalStorage(KEY, value);
+    editorContent: {
+      get: function () {
+        return this.$store.getters.getEditorContent
+      },
+      set: function (value) {
+        this.$store.commit('setEditorContent', value)
+      }
     },
-  },
 
-  mounted() {
-
-    let storedData = this._getFromLocalStorage(KEY);
-    if (storedData !== null) {
-      this.editorData = storedData;
-    } else {
-      this.editorData = "## Doc Title ## \n Hey! start type something.";
+    wordsCount: function () {
+      return this.$store.getters.getWordCount
     }
 
   },
 
+  /* === MOUNTED === */
+  mounted() {
+
+    // load editor data from store
+    this.$store.dispatch('getEditorContentFromStore')
+        .catch(e => {
+          console.log(e)
+        })
+
+
+    /* save editor content every 500 ms */
+    setInterval(() => {
+      this.$store.dispatch('putEditorContentInStore')
+    }, 500)
+
+
+  },
+
+  /* === METHODS === */
   methods: {
-    //
-
-    _putIntoLocalStorage: function (key, data) {
-
-      if (typeof (Storage) !== undefined) {
-        localStorage.setItem(key, data);
-        return true;
-      }
-      return false;
-
-    },
-
-    _getFromLocalStorage: function (key) {
-      if (typeof (Storage) !== undefined) {
-        return localStorage.getItem(key);
-      }
-      return null;
-    },
 
     onDownloadFile: function () {
-      downloadFile('document.md', this.editorData);
+      downloadFile('document.md', this.editorContent);
     },
 
     onCopyText: function () {
-      navigator.clipboard.writeText(this.editorData)
+      navigator.clipboard.writeText(this.editorContent)
           .then(() => {
             this.copyButtonLabel = '✔ copied';
 
@@ -142,7 +156,7 @@ export default {
     },
 
     onGeneratePreview: function () {
-      this.previewData = marked(this.editorData);
+      this.previewData = marked(this.editorContent);
       this.isPreview = !this.isPreview;
     }
 
@@ -309,8 +323,7 @@ a.button {
 
 
 #footer {
-  display: flex;
-  justify-content: center;
+  //display: flex;
 
   .footer__content {
     font-size: 0.9em;
