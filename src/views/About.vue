@@ -27,7 +27,7 @@
 
           <div class="text-center mt-2">
             <hr>
-            <p>from in srilanka with ❤.</p>
+            <p>from srilanka with ❤.</p>
           </div>
 
 

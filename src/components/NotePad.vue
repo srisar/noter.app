@@ -53,8 +53,15 @@
 
     </div><!-- header -->
 
-    <div id="notepad" class="flex-item padding-5">
-      <textarea v-if="!isPreview" class="editor" v-model="editorContent"></textarea>
+    <div id="notepad" class="flex-item padding-5"
+         @drop.prevent="onDropFile" @dragover.prevent="onDragOverFile" @dragleave="onDragLeave">
+
+      <div id="drop-zone" v-if="isFileDropping">
+        <h3>Drop your file here</h3>
+        <p>Please drop only text / markdown files</p>
+      </div>
+      <textarea v-if="!isPreview" class="editor" v-model="editorContent" spellcheck="false"
+                :style="{fontSize: config.fontSize + 'px', fontFamily: config.fontFace}"></textarea>
       <div v-else class="editor" v-html="previewData"></div>
     </div><!-- notepad -->
 
@@ -62,11 +69,11 @@
       <div class="footer__content d-flex justify-content-between align-items-center">
 
         <div class="text-start">
-          Words: {{ wordsCount }}
+          words: {{ wordsCount }}
         </div>
 
         <div class="text-end">
-          Developed by <a href="https://srisar.dev">srisar.dev</a> | Version {{ appVersion }}
+          by <a href="https://srisar.dev">srisar.dev</a> | version {{ appVersion }}
         </div>
 
 
@@ -78,8 +85,6 @@
 
 <script>
 
-// const KEY = 'content';
-
 import {downloadFile} from "@/helpers/downloader";
 
 const marked = require('marked');
@@ -89,12 +94,14 @@ export default {
 
   data() {
     return {
-      appVersion: '0.5',
+      appVersion: '0.9.3',
 
       previewData: "",
       isPreview: false,
 
       copyButtonLabel: 'copy',
+
+      isFileDropping: false,
 
     }
   },
@@ -114,6 +121,12 @@ export default {
 
     wordsCount: function () {
       return this.$store.getters.getWordCount
+    },
+
+    config: {
+      get() {
+        return this.$store.getters.getConfig
+      },
     }
 
   },
@@ -121,11 +134,9 @@ export default {
   /* === MOUNTED === */
   mounted() {
 
+    this.$store.dispatch('getConfigFromStore')
     // load editor data from store
     this.$store.dispatch('getEditorContentFromStore')
-        .catch(e => {
-          console.log(e)
-        })
 
 
     /* save editor content every 500 ms */
@@ -158,7 +169,45 @@ export default {
     onGeneratePreview: function () {
       this.previewData = marked(this.editorContent);
       this.isPreview = !this.isPreview;
-    }
+    },
+
+    /* on dropping file from desktop */
+    onDropFile: function (event) {
+
+      let files = event.dataTransfer.files;
+
+      /* check if file is dropped, otherwise ignore the drop */
+      if (files.length > 0) {
+
+        const file = files[0]
+
+        if (file.name.match(/.(md|txt|text|markdown)/i)) {
+          let fileReader = new FileReader()
+          fileReader.readAsText(files[0])
+
+          fileReader.onload = () => {
+            const text = fileReader.result
+
+            if (text !== '') {
+              this.editorContent = text
+            }
+          }
+        } else {
+          console.log('not a text file')
+        }
+      }
+
+      this.isFileDropping = false
+    },
+
+    /* while file is being dropped */
+    onDragOverFile: function () {
+      this.isFileDropping = true
+    },
+
+    onDragLeave: function () {
+      this.isFileDropping = false
+    },
 
   },
 
@@ -185,6 +234,7 @@ export default {
 
 
 }
+
 
 a.button {
   text-decoration: none;
@@ -298,6 +348,12 @@ a.button {
 
 
 #notepad {
+
+  display: flex; // make us of Flexbox
+  align-items: center; // does vertically center the desired content
+  justify-content: center; // horizontally centers single line items
+  text-align: center; // optional, but helps horizontally center text that breaks into multiple lines
+
   flex-grow: 1;
 
   .editor {
@@ -312,11 +368,29 @@ a.button {
     color: white;
     resize: none;
     line-height: 1.6em;
-    font-size: 1em;
+    //font-size: 1em;
+    overflow-x: hidden;
   }
 
   .editor:focus {
     outline: #1E1E1E;
+  }
+
+
+  #drop-zone {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #181818;
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    font-weight: bold;
+
+    pointer-events: none;
+
+    h3 {
+      font-weight: bold;
+    }
   }
 
 }

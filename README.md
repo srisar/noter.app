@@ -1,24 +1,13 @@
 # noter.app
 
-## Project setup
-```
-npm install
-```
+noter is a small note-taking app that utilized the html5 storage mechanism to temporarily and quickly store what you have written.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+the purpose of this simple, mostly useless app is to keep track of notes which need google input tools (tamil) to be able to type on. this is why desktop solutions don’t work for me. Since i write articles for my blog, i use markdown for styling, so as an added feature, i have added markdown preview and download options.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+it uses marked for markdown preview and vue.js for the ui.
 
-### Lints and fixes files
-```
-npm run lint
-```
+if you find it useful, i will be glad.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+it is available at https://noter.gravitide.dev
+
+apart from being simple and plain, it allows you to drag and drop local text / markdown files to be opened immediately.

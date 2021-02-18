@@ -34,7 +34,11 @@ export default new Vuex.Store({
 
         getWordCount: state => {
             return state.editor.wordCount
-        }
+        },
+
+        getConfig: state => {
+            return state.config
+        },
     },
     mutations: {
         setEditorContent: function (state, data) {
@@ -44,7 +48,11 @@ export default new Vuex.Store({
 
         setWordCount: function (state, wordCount) {
             state.editor.wordCount = wordCount
-        }
+        },
+
+        setConfig: function (state, config) {
+            state.config = config
+        },
     },
 
     actions: {
@@ -81,9 +89,12 @@ export default new Vuex.Store({
             })
         },
 
-        saveConfigToStore: function ({state}) {
+        saveConfigToStore: function ({state, commit}, config) {
 
             return new Promise((resolve, reject) => {
+
+                commit('setConfig', config)
+
                 try {
                     put(CONFIG, JSON.stringify(state.config))
                     resolve()
@@ -92,7 +103,23 @@ export default new Vuex.Store({
                 }
             })
 
-        }
+        },
+
+        getConfigFromStore: function ({commit}) {
+
+            return new Promise((resolve, reject) => {
+
+                try {
+                    const configString = get(CONFIG)
+                    commit('setConfig', JSON.parse(configString))
+
+                    resolve()
+
+                } catch (e) {
+                    reject(e)
+                }
+            })
+        },
 
 
     },

@@ -21,7 +21,7 @@
 
         <div class="mb-3">
           <label>Font size</label>
-          <input type="number" class="form-control" v-model="config.fontSize">
+          <input type="number" class="form-control" v-model.number="config.fontSize">
         </div>
 
       </div><!-- col -->
@@ -60,17 +60,19 @@ export default {
   name: "Settings",
 
   data() {
-    return {
-
-      config: {
-        fontFace: 'monospace',
-        fontSize: 14
-      }
-
-    }
+    return {}
   },
 
   computed: {
+
+    config: {
+      get() {
+        return this.$store.getters.getConfig
+      },
+      set(value) {
+        this.$store.commit('setConfig', value)
+      }
+    },
 
     validFontSize: function () {
       if (this.config.fontSize < 8) return 8
@@ -94,9 +96,9 @@ export default {
 
     onClickSave: function () {
 
-      this.$store.dispatch('saveConfigToStore')
-          .catch(e => {
-            console.log(e)
+      this.$store.dispatch('saveConfigToStore', this.config)
+          .then(() => {
+            this.$router.push('/')
           })
 
     },
