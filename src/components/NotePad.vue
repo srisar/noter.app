@@ -18,8 +18,13 @@
 
         <div class="right-side">
 
+          <button class="header__button" @click="onNewDocument">
+            <i class="bi bi-file-earmark-plus"></i>
+            <span class="popup">new document</span>
+          </button>
+
           <button class="header__button" @click="onDownloadFile">
-            <i class="bi bi-file-earmark-arrow-down-fill"></i>
+            <i class="bi bi-download"></i>
             <span class="popup">download document</span>
           </button>
 
@@ -29,7 +34,7 @@
           </button>
 
           <button class="header__button" @click="onGeneratePreview">
-            <i class="bi bi-markdown-fill"></i>
+            <i class="bi bi-markdown"></i>
             <span class="popup">view markdown preview</span>
           </button>
 
@@ -42,7 +47,7 @@
 
           <router-link to="/about" class="button">
             <button class="header__button">
-              <i class="bi bi-info-circle-fill"></i>
+              <i class="bi bi-info-circle"></i>
               <span class="popup">about noter</span>
             </button>
           </router-link>
@@ -62,7 +67,7 @@
       </div>
       <textarea v-if="!isPreview" class="editor" v-model="editorContent" spellcheck="false"
                 :style="{fontSize: config.fontSize + 'px', fontFamily: config.fontFace}"></textarea>
-      <div v-else class="editor" v-html="previewData"></div>
+      <div v-else class="editor__preview" v-html="previewData"></div>
     </div><!-- notepad -->
 
     <div id="footer" class="flex-item padding-5">
@@ -94,7 +99,7 @@ export default {
 
   data() {
     return {
-      appVersion: '0.9.3',
+      appVersion: '0.9.4',
 
       previewData: "",
       isPreview: false,
@@ -150,8 +155,9 @@ export default {
   /* === METHODS === */
   methods: {
 
+    /* download the file as md */
     onDownloadFile: function () {
-      downloadFile('document.md', this.editorContent);
+      downloadFile(this.editorContent);
     },
 
     onCopyText: function () {
@@ -207,6 +213,10 @@ export default {
 
     onDragLeave: function () {
       this.isFileDropping = false
+    },
+
+    onNewDocument: function () {
+      this.editorContent = ""
     },
 
   },
@@ -374,6 +384,23 @@ a.button {
 
   .editor:focus {
     outline: #1E1E1E;
+  }
+
+  .editor__preview {
+    p {
+      text-align: left;
+      margin-bottom: 1.2em;
+    }
+
+    h1, h2 {
+      margin-top: 1.2em;
+      margin-bottom: 1em;
+    }
+
+    h3 {
+      margin-top: 1em;
+      margin-bottom: 0.8em;
+    }
   }
 
 
