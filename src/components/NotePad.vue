@@ -84,22 +84,21 @@
 
       </div>
     </div><!-- footer -->
-
   </div>
+
 </template>
 
 <script>
-
 import {downloadFile} from "@/helpers/downloader";
+import {Toaster} from "@/helpers/toaster";
 
 const marked = require('marked');
 
 export default {
   name: "NotePad",
-
   data() {
     return {
-      appVersion: '0.9.4',
+      appVersion: '0.9.6',
 
       previewData: "",
       isPreview: false,
@@ -107,6 +106,8 @@ export default {
       copyButtonLabel: 'copy',
 
       isFileDropping: false,
+
+      toaster: undefined,
 
     }
   },
@@ -139,6 +140,8 @@ export default {
   /* === MOUNTED === */
   mounted() {
 
+    this.toaster = new Toaster('toast-container')
+
     this.$store.dispatch('getConfigFromStore')
     // load editor data from store
     this.$store.dispatch('getEditorContentFromStore')
@@ -164,6 +167,7 @@ export default {
       navigator.clipboard.writeText(this.editorContent)
           .then(() => {
             this.copyButtonLabel = '✔ copied';
+            this.toaster.show('✔ copied')
 
             setTimeout(() => {
               this.copyButtonLabel = 'copy text';
@@ -387,6 +391,15 @@ a.button {
   }
 
   .editor__preview {
+
+    height: 100%;
+
+    //box-shadow: inset 0 0 5px black;
+    border-radius: 5px;
+    padding: 20px 10px;
+    background-color: #181818;
+
+
     p {
       text-align: left;
       margin-bottom: 1.2em;
