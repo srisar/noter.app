@@ -98,7 +98,7 @@ export default {
   name: "NotePad",
   data() {
     return {
-      appVersion: '0.9.6',
+      appVersion: '0.9.9',
 
       previewData: "",
       isPreview: false,
@@ -167,7 +167,7 @@ export default {
       navigator.clipboard.writeText(this.editorContent)
           .then(() => {
             this.copyButtonLabel = '✔ copied';
-            this.toaster.show('✔ copied')
+            this.toaster.show('✔ copied', false)
 
             setTimeout(() => {
               this.copyButtonLabel = 'copy text';
@@ -393,6 +393,7 @@ a.button {
   .editor__preview {
 
     height: 100%;
+    width: 100%;
 
     //box-shadow: inset 0 0 5px black;
     border-radius: 5px;

@@ -24,12 +24,12 @@ if (process.env.NODE_ENV === 'production') {
             console.log('New content is available; please refresh.')
 
             const toaster = new Toaster('toast-container')
-            toaster.show('New version is available', {
+            toaster.show('New version available ', false, {
                 label: 'Refresh',
                 func: function () {
                     window.location.reload()
                 }
-            }, false)
+            },)
         },
         offline() {
             console.log('No internet connection found. App is running in offline mode.')

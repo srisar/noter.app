@@ -5,26 +5,25 @@ export class Toaster {
         this.container = document.getElementById(container)
     }
 
-    show(message = 'Hello, I am a toast', clickable = undefined, autohide = true) {
+    show(message = 'Hello, I am a toast', autohide = true, clickable = undefined) {
 
         let clickableArea = "";
 
         if (clickable !== undefined) {
-            clickableArea = `<button id="btn-click-handler" class="btn btn-sm btn-dark">${clickable.label}</button>`
+            clickableArea = `<button id="btn-click-handler" class="btn btn-sm btn-light">${clickable.label}</button>`
         }
 
         const html =
             `
-            <div class="position-fixed bottom-0 d-flex align-items-center justify-content-center p-3">
-                <div class="toast align-items-center text-white bg-secondary border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                <div class="toast-body">
-                    ${message} ${clickableArea}
-                </div>
+            <div class="toast text-white bg-dark border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="toast-body text-center w-100">
+                        ${message} ${clickableArea}
+                    </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" id="btn-toast-close" aria-label="Close"></button>
                 </div>
-                </div>
             </div>
+            
             `
         this.container.innerHTML = html
 
@@ -47,6 +46,7 @@ export class Toaster {
     }
 
     hide() {
+
         this.container.innerHTML = ""
     }
 }
