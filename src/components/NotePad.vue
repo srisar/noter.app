@@ -33,7 +33,7 @@
             <span class="popup">{{ copyButtonLabel }}</span>
           </button>
 
-          <button class="header__button" @click="onGeneratePreview">
+          <button class="header__button" @click="onGeneratePreview" :class="{'header__button-pressed': isPreview}">
             <i class="bi bi-markdown"></i>
             <span class="popup">view markdown preview</span>
           </button>
@@ -66,7 +66,7 @@
         <p>Please drop only text / markdown files</p>
       </div>
       <textarea v-if="!isPreview" class="editor" v-model="editorContent" spellcheck="false"
-                :style="{fontSize: config.fontSize + 'px', fontFamily: config.fontFace}"></textarea>
+                :style="{fontSize: editorConfig.fontSize + 'px', fontFamily: editorConfig.fontFace}"></textarea>
       <div v-else class="editor__preview" v-html="previewData"></div>
     </div><!-- notepad -->
 
@@ -74,7 +74,7 @@
       <div class="footer__content d-flex justify-content-between align-items-center">
 
         <div class="text-start">
-          words: {{ wordsCount }}
+          {{ wordsCount }} words | {{ readTime }} to read
         </div>
 
         <div class="text-end">
@@ -89,32 +89,28 @@
 </template>
 
 <script>
-import {downloadFile} from "@/helpers/downloader";
-import {Toaster} from "@/helpers/toaster";
+import {downloadFile} from "@/helpers/downloader"
+import {Toaster} from "@/helpers/toaster"
+import {enableTabbing} from "@/helpers/textarea"
 
-const marked = require('marked');
+const marked = require('marked')
+const _ = require('lodash')
 
 export default {
   name: "NotePad",
   data() {
     return {
-      appVersion: '0.9.9',
-
+      appVersion: '0.1.3',
       previewData: "",
       isPreview: false,
-
       copyButtonLabel: 'copy',
-
       isFileDropping: false,
-
       toaster: undefined,
-
     }
   },
 
   /* === COMPUTED === */
   computed: {
-    //
 
     editorContent: {
       get: function () {
@@ -129,7 +125,19 @@ export default {
       return this.$store.getters.getWordCount
     },
 
-    config: {
+    readTime: function () {
+      /* average read time is 130 wpm */
+      let time = _.round(this.wordsCount / 130, 1)
+
+      if (time < 1) {
+        return 'less than a minute'
+      } else {
+        return `${time} minutes`
+      }
+
+    },
+
+    editorConfig: {
       get() {
         return this.$store.getters.getConfig
       },
@@ -146,6 +154,7 @@ export default {
     // load editor data from store
     this.$store.dispatch('getEditorContentFromStore')
 
+    enableTabbing()
 
     /* save editor content every 500 ms */
     setInterval(() => {
@@ -220,6 +229,7 @@ export default {
     },
 
     onNewDocument: function () {
+      this.isPreview = false
       this.editorContent = ""
     },
 
@@ -300,9 +310,9 @@ a.button {
     align-items: center;
 
     .logo__text {
-      font-size: 1.3em;
+      font-size: 1.5em;
       line-height: 1.5em;
-      margin-bottom: 3px;
+      margin-bottom: 1px;
     }
 
     .logo__icon {
@@ -310,7 +320,7 @@ a.button {
       // flex: 1;
 
       img {
-        height: 24px;
+        height: 32px;
         margin-right: 5px;
       }
     }
@@ -323,18 +333,21 @@ a.button {
     align-items: center;
     justify-content: center;
 
-    border-radius: 5px;
+    border-radius: 3px;
     margin-left: 10px;
     padding: 5px;
-    border: solid 1px #9e9e9e;
-    color: #9e9e9e;
-    background-color: #181818;
+    border: solid 1px #181818;
+    color: #FF5370;
+    background-color: #454545;
     transition: 280ms all ease-out;
+    width: 32px;
+    height: 32px;
+    box-shadow: 0 0 5px #181818;
 
     i {
-      font-size: 1em;
+      //font-size: 1em;
       line-height: 1.5em;
-      margin-top: -10px;
+      margin-top: -5px;
     }
 
 
@@ -347,13 +360,21 @@ a.button {
   }
 
   .header__button:hover {
-    background-color: #ff9800;
+    background-color: #FF5370;
     border-color: #1E1E1E;
-    color: #181818;
+    color: #1E1E1E;
+    box-shadow: 0 0 5px #FF5370;
   }
 
   .header__button:focus {
     outline: none;
+  }
+
+  .header__button-pressed {
+    background-color: #FF5370;
+    border-color: #1E1E1E;
+    color: #1E1E1E;
+    box-shadow: 0 0 5px #FF5370;
   }
 
 }

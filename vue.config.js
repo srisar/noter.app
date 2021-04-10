@@ -1,6 +1,6 @@
 module.exports = {
     pwa: {
-        name: 'noter.app',
+        name: 'noter-app',
         themeColor: '#F5616C',
         iconPaths: {
             favicon32: 'img/icons/favicon-32x32.png?v=2',

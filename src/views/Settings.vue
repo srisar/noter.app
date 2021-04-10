@@ -2,44 +2,50 @@
 
   <div class="container my-3">
 
-    <h3 class="text-center">Settings</h3>
-    <hr>
 
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6">
 
-    <div class="row">
+        <h3 class="text-center">Settings</h3>
+        <hr>
 
-      <div class="col-6">
+        <div class="row">
 
-        <div class="mb-3">
-          <label>Font face</label>
-          <input type="text" class="form-control" v-model="config.fontFace">
-        </div>
+          <div class="col-6">
+
+            <div class="mb-3">
+              <label>Font face</label>
+              <input type="text" class="form-control" v-model="config.fontFace">
+            </div>
+
+          </div><!-- col -->
+
+          <div class="col-6">
+
+            <div class="mb-3">
+              <label>Font size</label>
+              <input type="number" class="form-control" v-model.number="config.fontSize">
+            </div>
+
+          </div><!-- col -->
+
+        </div><!-- row -->
+
+        <div class="row my-5">
+          <div class="col">
+            <h4 class="text-center">Preview</h4>
+            <textarea
+                class="form-control"
+                rows="5"
+                v-bind:style="{fontSize: validFontSize + 'px', fontFamily: validFontFace}"
+            >Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
+
+          </div>
+        </div><!-- row -->
 
       </div><!-- col -->
-
-      <div class="col-6">
-
-        <div class="mb-3">
-          <label>Font size</label>
-          <input type="number" class="form-control" v-model.number="config.fontSize">
-        </div>
-
-      </div><!-- col -->
-
     </div><!-- row -->
 
-
-    <div class="row my-5">
-      <div class="col">
-        <h4 class="text-center">Preview</h4>
-        <textarea
-            class="form-control"
-            rows="5"
-            v-bind:style="{fontSize: validFontSize + 'px', fontFamily: validFontFace}"
-        >Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
-
-      </div>
-    </div>
 
     <div class="row">
       <div class="col">
