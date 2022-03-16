@@ -8,6 +8,6 @@ it uses marked for markdown preview and vue.js for the ui.
 
 if you find it useful, i will be glad.
 
-it is available at https://noter.gravitide.dev
+it is available at https://vercel-noter-app.vercel.app/
 
 apart from being simple and plain, it allows you to drag and drop local text / markdown files to be opened immediately.
